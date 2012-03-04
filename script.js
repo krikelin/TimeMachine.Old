@@ -52,7 +52,7 @@ function scrobble(year, params) {
 			
 				console.log(search.tracks.length);
 				var seed = Math.floor(search.tracks.length*Math.random());
-				$("#radio_playlist").animate({left: '-=128px',transform: '-=10px'}, "fast");
+			
 				
 				console.log(seed);
 				
@@ -64,18 +64,26 @@ function scrobble(year, params) {
 				temp_playlist.add(track);
 				var player = new views.Image( track.data.album.cover, track.data.uri, "w");
 				player.node.style.width="256px";
-				player.node.style.height="256px";
+				player.node.style.height="245px";
 				
 
-				var li = document.createElement("td");
+				var li = document.createElement("span");
 				li.appendChild(player.node);
-				$("#radio_pls").append(li);
-				
+				li.style.position = "absolute";
+				li.style.top = "120px";
+				li.style.left = "530px";
+				li.setAttribute("class", "track");
 				models.player.play(track, temp_playlist);
 				console.log("A");
-				if(!first || i > 2) {
-					break;
-				}
+				$("#radio_pls").append(li);
+				$(".track").each(function(index) {
+					$(this).animate({left: '-=256px'}, "fast");
+				});
+				
+				
+				
+				break;
+				
 			}
 			first = false;
 		} catch(e) {
@@ -123,7 +131,7 @@ function load(){
 				}
 				scrobble(year, genre);
 				setInterval(function() { 
-					if(models.player.position != null)
+					if(models.player.track != null)
 						if(models.player.position > models.player.track.duration -2010) {
 							scrobble(year, genre);
 						}

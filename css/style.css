@@ -11,11 +11,13 @@
 }
 .sp-image {
 	-webkit-box-reflect:below 5px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5, transparent), to(white));
-}
+	border-radius:10px;
+	
+	}
 #radio_playlist {
 	list-style-type: none;
-	position: relative;
-	left:45%;
+	position: absolute;
+	left:60%;
 	top:120px;
 }
 #radio_playlist li {
