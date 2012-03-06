@@ -80,7 +80,8 @@ function scrobble(year, params) {
 	var options =
 	{
 		"searchAlbums" : false,
-		"searchArtists" : false		
+		"searchArtists" : false,
+		"pageSize": 25,
 	};
 	var search = new models.Search("year:1901-" + year + "  " + params + "", options);
 	search.observe(models.EVENT.CHANGE, function() {
@@ -101,7 +102,9 @@ function scrobble(year, params) {
 					max++;
 					continue;
 				}
+				uris +=  track.data.uri + ";";
 				temp_playlist.add(track);
+				
 			}
 			if(first) {
 				scrollTo(0);
