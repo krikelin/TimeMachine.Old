@@ -35,6 +35,44 @@ var changable = false;
 Generate a new track
 ****/
 var temp_playlist = null;
+var tile_size = 256;
+var left = 1220;
+function getLeft(no) {
+	return   window.innerWidth +((no) * tile_size);
+}
+function scrollTo(no) {	
+	$("#l_track").html("");
+	$("#r_track").html("");
+	$("#track").html("");
+	var track = temp_playlist.get(no);
+	// Create first view
+	var player = new views.Image(track.data.album.cover, track.data.uri, "M");
+	player.node.style.width = "340px";
+	player.node.style.height = "340px";
+	
+	$("#track").append(player.node);
+	
+	// Create left and rightview
+	
+	// Create left view
+	if(no > 0) {
+		track = temp_playlist.get(no - 1);
+		var l_player = new views.Image(track.data.album.cover, track.data.uri, "M");
+	
+		l_player.node.style.width = "120px";
+		l_player.node.style.height = "120px";
+		$("#l_track").append(l_player.node);
+	}
+	if(no < temp_playlist.tracks.length - 1) {
+		track = temp_playlist.get(no+1);
+		var r_player = new views.Image(track.data.album.cover, track.data.uri, "M");
+	
+		r_player.node.style.width = "120px";
+		r_player.node.style.height = "120px";
+		$("#r_track").append(r_player.node);
+	}
+	
+}
 function scrobble(year, params) {
 	if(!activated) {
 		return;
@@ -44,46 +82,30 @@ function scrobble(year, params) {
 		"searchAlbums" : false,
 		"searchArtists" : false		
 	};
-	var search = new models.Search("year:" + year + "  " + params + "", options);
+	var search = new models.Search("year:1901-" + year + "  " + params + "", options);
 	search.observe(models.EVENT.CHANGE, function() {
-		
+		var uris = "";
 		try {
-			for(var i = 0; i < search.tracks.length; i++) {
+			var max = 3;
+			if(search.tracks.length < 1) {
+				$("#msg").fadeIn();
+				$("#msg").html("The station returned no results.");
+			} else {
+				$("#msg").hide();
+			}
+			for(var i = 0; i < search.tracks.length && i < max; i++) {
+				var seed = Math.floor(Math.random()*(search.tracks.length-1));
 			
-				console.log(search.tracks.length);
-				var seed = Math.floor(search.tracks.length*Math.random());
-			
-				
-				console.log(seed);
-				
 				var track = search.tracks[seed];
-				console.log(track.data.album);
-				
-				console.log(track);
-				
+				if(uris.indexOf(track.data.uri) != -1) {
+					max++;
+					continue;
+				}
 				temp_playlist.add(track);
-				var player = new views.Image( track.data.album.cover, track.data.uri, "w");
-				player.node.style.width="256px";
-				player.node.style.height="245px";
-				
-
-				var li = document.createElement("span");
-				li.appendChild(player.node);
-				li.style.position = "absolute";
-				li.style.top = "120px";
-				li.style.left = "530px";
-				li.setAttribute("class", "track");
-				models.player.play(track, temp_playlist);
-				console.log("A");
-				$("#radio_pls").append(li);
-				$(".track").each(function(index) {
-					$(this).animate({left: '-=256px'}, "fast");
-				});
-				
-				
-				
-				break;
-				
+			}
+			if(first) {
+				scrollTo(0);
+				models.player.play(temp_playlist.get(0), temp_playlist);
 			}
 			first = false;
 		} catch(e) {
@@ -99,11 +121,12 @@ var preTrack = null;
 var nowTrack = null;
 var activated = true;
 function load(){
-	
+	console.log(models.EVENT);
 	temp_playlist = new models.Playlist();
 
 	$("#btnGo").bind("click", function(e) {
 		var year = document.getElementById("timeslider").value;
+		 document.getElementById("timeslider").setAttribute("max", new Date().getFullYear());
 		self.location="spotify:app:timemachine:year:" + year + ":" + document.getElementById("query").value;
 	});
 	$("#timeslider").bind("change", function(e) {	
@@ -121,6 +144,8 @@ function load(){
 		activated = true;
 		var args = models.application.arguments;
 		console.log(args);
+		temp_playlist = new models.Playlist();
+		first = true;
 		try {
 			if(!isNaN(args[1])) {
 				year = args[1];
@@ -130,12 +155,7 @@ function load(){
 					genre = args[2];
 				}
 				scrobble(year, genre);
-				setInterval(function() { 
-					if(models.player.track != null)
-						if(models.player.position > models.player.track.duration -2010) {
-							scrobble(year, genre);
-						}
-				}, 100);
+				
 			} else {
 				switch_section("overview");
 				
@@ -145,5 +165,21 @@ function load(){
 		}
 	});
 	
+	models.player.observe(models.EVENT.CHANGE, function(event) {
+		
+		if(temp_playlist == null)
+			return;
+		
+		if(event.data.curtrack) {
+			console.log("F");
+			var track = models.player.track;
+			
+			var pos = temp_playlist.indexOf(track);
+			if(pos > temp_playlist.tracks.length - 3) {
+				scrobble(year, genre);
+			}
+			scrollTo(pos);
+		}
+	});
 	
 }
