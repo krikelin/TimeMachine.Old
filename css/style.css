@@ -1,213 +1,80 @@
-.display{
-	background-color:#111111;
-	box-shadow: inset 0px -1px 5px #FFFFFF, inset 0px 0px 13px #000000, inset 0px 35px 110px #565656,inset 0px -15px 13px #555555, inset 0px 1px 1px #000000;
-	padding:8px;
-	border-radius:12px;
-	font-size:23px;
-	color:#88ff88;
-	vertical-align:center;
-	position: relative;
-	top:20px;
-}
-.sp-image {
-	-webkit-box-reflect:below 5px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.5, transparent), to(white));
-	border-radius:10px;
-	
-	}
-#radio_playlist {
-	list-style-type: none;
-	position: absolute;
-	left:60%;
-	top:120px;
-}
-#radio_playlist li {
-	float: left;
+<!--
+ /*
+ * Copyright (C) 2011 Alexander Forselius
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Timemachine</title>
+		<link rel="stylesheet" href="sp://import/css/adam.css">
+		<link rel="stylesheet" href="sp://import/css/api.css">
+		<link rel="stylesheet" href="css/style.css">
 
-}
-.range {
-    -webkit-appearance: none !important;
-    border-radius: 28px;
-    background-image:  -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(0, rgb(0,0,0)),
-		color-stop(0.58, rgb(41,41,41))
-	);
+		<script src="js/jquery-1.7.1.min.js" language="javascript"></script>
+		<script src="js/jquery-spotify/jquery-spotify-0.1.dev.js" language="javascript"></script>
+		<script src="js/script.js" language="javascript"></script>
+		<script src="js/xmlhttp.js" language="javascript"></script>
+	</head>
+	<body  onload="sp = getSpotifyApi(1); script = sp.require('script'); script.init()">
+		<header>
+			<span class="display" id="bigyear">2011</span>
+		</header>
+		<div  class="section" id="section_overview">
+			<div id="flow">
+				
+			</div>
+			<div id="slider" style="text-align:center">
+					<span class="year">1920</span><input class="range" id="timeslider" min="1920" max="2012" type="range" style="width:80%" />
+				<span class="year">2012</span>
 
-	box-shadow:inset 0px 1px 12px #000000;
-    height:28px;}
-.range::-webkit-slider-thumb {
-    -webkit-appearance: none !important;
-    border-radius: 128px;
-    background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(0, rgb(161,161,161)),
-		color-stop(0.58, rgb(232,232,232))
-	);
-	box-shadow: 0px 1px 12px #111111;
-    height:22px;
-    width:22px;
-}
-strong{
-	font-family:"Arial Black";
-	color:#ffffff;
-	text-shadow: 0px -1px 0px #000000;
-}
-.next{
-	width:120px;
-	height:120px;
-	border-radius:320px;
-	border:0px;
-	font-size:100px;
-	text-align:center;
-	
-	background-color:#ffffff;
-	opacity:0.5;
-	float:right;
-}
-.loading_indicator{
-	-webkit-mask-image: url("../img/loading_indicator.png");
-	background-color: #000;
-	-webkit-animation-name: spinnerRotate;
-	-webkit-animation-duration: 2s;
-	-webkit-animation-iteration-count: infinite;
-	width:32px;
-	height:32px;
-	-webkit-animation-timing-function: linear;
-}
-@-webkit-keyframes spinnerRotate {
-	from {
-		-webkit-transform:rotate(0deg);
-	}
-	to {
-		-webkit-transform:rotate(360deg);
-	}
-}
-body{
-	background-size: 100% 100%;
-	min-height: 100%;
-	background-position: fixed;
-	/*box-shadow:inset 0px 215px 1125px #000000, inset 0px -120px 1125px #aaaaaa;*/
-/*	background-image: url("../img/bg.png"); */
-text-align: center;
-	
-}
-.box {
-	
-	margin-left:20%;
-	margin-right:10px;
-	width:640px;
-}
-.year{
-	font-size:32px;
-	font-weight:bold;
-	font-family:"Impact";
-	color:#88ffff;
-}
-#slider, #find, #save{
-	text-align:center;
-	padding:20px;
-}
+			</div>
+			<div id="find">
+				
+				<input class="input" placeholder="Enter a search query to filter your experience" type="search" id="query" list="powers"/>
+				<datalist id="powers">
+					 <option value="1950">
+					 <option value="2000">
+					 <option value="2012">
+				</datalist>
 
-#flow, #history{
-/*	box-shadow:inset 0px 1px 3px #111111;*/
-	
-	
-}
-#current_track, #current_track * {
-	
-}
-#flow{
-	padding-top:12px;
-	height: 252px;
-	text-align:center;
-	padding-top:120px;
-	
-	
-}
+			</div>
+			<div id="save">
+				<button id="btnGo" class="buttonx">Go</button>
+			</div>
+		</div>	
+		<div id="section_radio" class="section" style="display: none">
+			
+				<div id="radiosectio">
+					<div id="l_track" ></div>
+					<div id="track" ></div>
+					<div id="r_track" ></div>
+					
+					<div id="msg" ></div>
+				</div>
+			
+		</div>
+		<footer>
 
-#cyear{
-	opacity:0.4;
-	text-align:center;
-	
-}
-.sectionw{
-	width:100%;
-	text-indent:12px;
-	background-image: url("../img/section.png");
-	height:23px;
-	font-family: "Helvetica";
-	font-weight: bold;
-	color:#FFFFFF;
-	text-shadow:0px -1px 1px #333333;
-}
-#bigyear{
-	font-size:30px;
-}
-.lightbox{
-	border-radius:12px;
-	background-color:#373737;
-	padding:20px;
-	margin:30px;
-}
-#year, #chosen_year{
-	
-	width:320px;
-	opacity:0.8;
-	color:#000000;
-	font-weight:bold;
-	text-shadow: 0px -1px 1px #ffffff;
-}
-footer{
-	height:120px;
-}
-#history{
-	height:128px;
-	background-color:#333333;
-}
-section{
+				<div id="current_track"></div>
 
-}
-.buttonx{
-	font-size:12px;
-	height:28px;
-	padding-left:32px;
-	padding-right:32px;
-	border: 1px solid #333333;
-	background-color:#AAAAAA;
-	border-radius:38px;
-	box-shadow:0px 1px 3px #000000, inset 0px 1px 1px #eeeeee;
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(0.01, rgb(191,191,191)),
-		color-stop(0.95, rgb(230,230,230))
-	);
-	text-shadow:0px -1px 1px #FFFFFF;
-	
-}
-.buttonx:active{
-	background-image: -webkit-gradient(
-		linear,
-		left bottom,
-		left top,
-		color-stop(0.01, rgb(112,112,112)),
-		color-stop(0.95, rgb(74,74,74))
-	);
-	color:#FFFFFF;
-	text-shadow:0px -1px 1px #000000;
-}
 
-header{
-	background-color:#333333;
-	border-bottom: 1px solid #000000;
-	height:64px;
-	text-align: middle;
-	
-
-	
-}
+		</footer>
+		<div id="error">
+			<span>Connection has been lost</span>
+		</div>
+	</body>
+</html>
